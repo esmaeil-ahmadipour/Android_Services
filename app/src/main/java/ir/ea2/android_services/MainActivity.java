@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import ir.ea2.android_services.services.DownloadForegroundService;
 import ir.ea2.android_services.services.DownloadIntentService;
 import ir.ea2.android_services.services.DownloadUnboundedService;
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRunService;
     public static final String URL_KEY = "URL_KEY";
     private final String url = "https://ea2.ir/uploads/Resume_Esmaeil_Ahmadipour.jpg";
+    public static final String CHANNEL_ID = "FOREGROUND_CHANNEL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +31,9 @@ public class MainActivity extends AppCompatActivity {
         btnRunService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentService = new Intent(MainActivity.this, DownloadUnboundedService.class);
+                Intent intentService = new Intent(MainActivity.this, DownloadForegroundService.class);
                 intentService.putExtra(URL_KEY,url);
                 startService(intentService);
-
-                // * For Close Service Using stopService()
-               // stopService(intentService);
             }
         });
     }
