@@ -39,7 +39,12 @@ public class DownloadUnboundedService extends Service {
             }).start();
 
         }
-        return super.onStartCommand(intent, flags, startId);
+        // * After System Close Service , Can't Run Again Service.
+        // return START_NOT_STICKY;
+        // * After Close Service , Rerun Service Without (Last Intent) . Note : In This Situation Intent Is Null.
+        // return START_STICKY;
+        // * After System Close Service , Rerun Service With (Last Intent) .
+        return START_REDELIVER_INTENT;
     }
 
     public void download(String url, String path) {
