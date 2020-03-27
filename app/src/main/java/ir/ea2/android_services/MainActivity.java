@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentService = new Intent(MainActivity.this, DownloadUnboundedService.class);
                 intentService.putExtra(URL_KEY,url);
                 startService(intentService);
+
+                // * For Close Service Using stopService()
+               // stopService(intentService);
             }
         });
     }

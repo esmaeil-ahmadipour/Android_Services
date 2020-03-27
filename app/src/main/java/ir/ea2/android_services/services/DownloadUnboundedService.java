@@ -26,6 +26,12 @@ public class DownloadUnboundedService extends Service {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG,"onDestroy!");
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getExtras() != null) {
 
@@ -35,10 +41,12 @@ public class DownloadUnboundedService extends Service {
                 @Override
                 public void run() {
                     download(url, "");
+                    stopSelf();
                 }
             }).start();
 
         }
+
         // * After System Close Service , Can't Run Again Service.
         // return START_NOT_STICKY;
         // * After Close Service , Rerun Service Without (Last Intent) . Note : In This Situation Intent Is Null.
