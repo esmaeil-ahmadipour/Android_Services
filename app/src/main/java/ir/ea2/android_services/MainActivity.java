@@ -2,21 +2,18 @@ package ir.ea2.android_services;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
 import ir.ea2.android_services.services.DownloadForegroundService;
-import ir.ea2.android_services.services.DownloadIntentService;
-import ir.ea2.android_services.services.DownloadUnboundedService;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG="LOG_TAG";
     private Button btnRunService;
     public static final String URL_KEY = "URL_KEY";
-    private final String url = "https://ea2.ir/uploads/Resume_Esmaeil_Ahmadipour.jpg";
+    public static final String url = "https://ea2.ir/uploads/Resume_Esmaeil_Ahmadipour.jpg";
     public static final String CHANNEL_ID = "FOREGROUND_CHANNEL";
+    private Button buttonGoSecondaryPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +33,21 @@ public class MainActivity extends AppCompatActivity {
                 startService(intentService);
             }
         });
+
+        buttonGoSecondaryPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent navToSecondaryPage = new Intent(MainActivity.this , SecondaryActivity.class);
+
+                startActivity(navToSecondaryPage);
+            }
+        });
     }
 
     private void setViews() {
         btnRunService = findViewById(R.id.ac_main_btn_runService);
+        buttonGoSecondaryPage = findViewById(R.id.ac_main_btn_secondaryPage);
+
     }
 }
 

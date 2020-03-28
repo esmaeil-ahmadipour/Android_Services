@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Android_Services</string>
     <string name="run_service">Run Service</string>
+    <string name="nav_secondary_page">Go Secondary Page</string>
 </resources>
