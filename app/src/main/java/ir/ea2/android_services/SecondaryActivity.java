@@ -8,11 +8,12 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import ir.ea2.android_services.services.DownloadBoundedService;
 import ir.ea2.android_services.services.DownloadBoundedService.DownloadBinder;
 
-public class SecondaryActivity extends AppCompatActivity {
+public class SecondaryActivity extends AppCompatActivity implements DownloadBoundedService.DownloadListener {
     private DownloadBinder binder = null;
     private boolean isBounded = false;
     private ProgressBar progressBar;
@@ -24,6 +25,7 @@ public class SecondaryActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = (DownloadBinder) service;
+            binder.setDownloadListener(SecondaryActivity.this);
             isBounded = true;
         }
 
@@ -46,29 +48,37 @@ public class SecondaryActivity extends AppCompatActivity {
         buttonRunService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(binder != null){
+                if (binder != null) {
                     binder.startDownload(url);
 
                 }
             }
         });
     }
-//
+
+    //
     private void setViews() {
         progressBar = findViewById(R.id.ac_secondary_prg);
         buttonRunService = findViewById(R.id.ac_secondary_btn);
     }
-//
+
     @Override
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, DownloadBoundedService.class);
-
-//        /*  Usable Flags in bindService :
-//         *   BIND_AUTO_CREATE : Create Service For Once .
-//         *   BIND_ABOVE_CLIENT & BIND_ADJUST_WITH_ACTIVITY : Try Save Service .
-//         */
-//
         bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void downloadedPercent(int percent) {
+        progressBar.setProgress(percent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isBounded){
+            unbindService(connection);
+        }
     }
 }

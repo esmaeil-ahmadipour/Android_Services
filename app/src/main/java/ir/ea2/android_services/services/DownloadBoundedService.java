@@ -16,20 +16,22 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import androidx.annotation.Nullable;
+
 import static ir.ea2.android_services.MainActivity.TAG;
 
 public class DownloadBoundedService extends Service {
-    private  DownloadBinder downloadBinder = new DownloadBinder();
+    private DownloadBinder downloadBinder = new DownloadBinder();
+    private DownloadListener downloadListener = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG,"BoundedService : onCreate");
+        Log.e(TAG, "BoundedService : onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG,"BoundedService : onStartCommand");
+        Log.e(TAG, "BoundedService : onStartCommand");
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -37,7 +39,7 @@ public class DownloadBoundedService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(TAG,"BoundedService : onBind");
+        Log.e(TAG, "BoundedService : onBind");
 
         return downloadBinder;
     }
@@ -46,13 +48,13 @@ public class DownloadBoundedService extends Service {
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Log.e(TAG,"BoundedService : onRebind");
+        Log.e(TAG, "BoundedService : onRebind");
 
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.e(TAG,"BoundedService : onUnbind");
+        Log.e(TAG, "BoundedService : onUnbind");
 
         return super.onUnbind(intent);
     }
@@ -60,12 +62,12 @@ public class DownloadBoundedService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG,"BoundedService : onDestroy");
+        Log.e(TAG, "BoundedService : onDestroy");
 
     }
 
-    public  class DownloadBinder extends Binder {
-        public void startDownload(final String url){
+    public class DownloadBinder extends Binder {
+        public void startDownload(final String url) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -73,6 +75,14 @@ public class DownloadBoundedService extends Service {
                 }
             }).start();
         }
+
+       public void setDownloadListener(DownloadListener listener) {
+            downloadListener = listener;
+        }
+    }
+
+    public interface DownloadListener {
+        void downloadedPercent(int percent);
     }
 
     public void downloader(String url) {
@@ -94,6 +104,9 @@ public class DownloadBoundedService extends Service {
                 int percent = ((int) (total * 100 / contentLength));
                 if (contentLength > 0) {
                     Log.e("Downloader", "Percent: " + percent);
+                    if (downloadListener != null) {
+                        downloadListener.downloadedPercent(percent);
+                    }
                 }
                 fos.write(data, 0, count);
             }
